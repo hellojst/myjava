@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+		
+	<!-- 配置chinses实例 -->
+	<bean id = "chinese" class = "com.user.stjia.Chinese">
+		<property name = "axe" ref= "stoneAxe"/>
+	</bean>
+	
+	<bean id = "yellowPerson" class = "com.user.stjia.YellowPerson">
+		<constructor-arg ref = "stoneAxe"></constructor-arg>
+	</bean>
+	
+	<bean id = "stoneAxe" class = "com.user.stjia.StontAxe"/>
+	
+	<!-- 配置监听器 -->
+	<bean id = "emailnotifier" class = "com.user.stjia.EmailNotifier" />
+	
+	<context:component-scan base-package="com.user.stjia">
+		<context:include-filter type="annotation"
+			expression="org.aspectj.lang.annotation.Aspect" />
+	</context:component-scan>
+	
+	<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+</beans>
