@@ -33,6 +33,10 @@ public class MysortMain {
 		System.out.println("自顶而下的归并排序：");
 		int[] sorts3 = SortUtil.mergeSort(SortUtil.getSortData());
 		SortUtil.printArrays(sorts3);
+		System.out.println("堆排序");
+		int[] sorts4 = SortUtil.getSortData();
+		SortUtil.heapSort(sorts4);
+		SortUtil.printArrays(sorts4);
 	}
 
 }

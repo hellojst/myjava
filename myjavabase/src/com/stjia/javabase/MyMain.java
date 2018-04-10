@@ -19,6 +19,10 @@ import com.stjia.javabase.producer.Producer;
 import com.stjia.javabase.threadpool.MyThread;
 import com.stjia.javabase.threadpool.ThreadPool;
 
+/**
+ * @author stjia
+ * @time 2018年2月28日
+ */
 public class MyMain {
 	public static void main(String[] args) {
 //		//1. future模式

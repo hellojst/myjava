@@ -1,8 +1,6 @@
 package com.stjia.javabase.threadpool;
 
-import java.util.List;
 import java.util.Queue;
-import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**

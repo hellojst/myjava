@@ -2,7 +2,7 @@ import java.io.IOException;
 import java.util.Scanner;
 
 /**
- * 
+ * 守护线程
  * @author stjia
  * @time 2018年3月18日
  */

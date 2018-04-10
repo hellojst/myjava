@@ -22,6 +22,8 @@ public class SortUtil {
 	public static int NORMAL_QUICK = 0;
 	public static int THREEWAY_QUICK = 1;
 	private static int[] aux; //自顶而下等递归归并所需的辅助数组
+	private static int[] pq; //堆排序辅助数组
+	private static int N = 0; //存储于pq[1...N]中，pq[0]没有使用
 
 	public static int[] getSortData() {
 		int[] datas = new int[LENGTH];
@@ -142,7 +144,7 @@ public class SortUtil {
 	public static int[] bubbleSort(int[] datas) {
 		int length = datas.length;
 		for (int i = 0; i < length - 1; i++) {
-			for (int j = i; j < length; j++) {
+			for (int j = i + 1; j < length; j++) {
 				if (datas[i] > datas[j]) {
 					int temp = datas[i];
 					datas[i] = datas[j];
@@ -256,7 +258,7 @@ public class SortUtil {
 	};
 	
 	/**
-	 * 此为全速排序的核心算法
+	 * 此为快速排序的核心算法
 	 * 快速排序的切分
 	 * 执行一次此方法即返回索引的左侧均小于索引处值，右侧均大于索引处值
 	 * @param lo 最低位
@@ -281,6 +283,8 @@ public class SortUtil {
 		
 		//将v放到中间位置，其左均比其小，其右均比其大 因为跳出循环条件为i>=j;还应注意的是，左指针先动，i停止的地方要么比v大，要么到达右指针位置；
 		//而右指针后动，所以最后跳出大循环时左指针指的是大于v的第一个数，右指针则可以刚好跨过，到大于V的（左指针位置）的数左边一位数，与V换位即可，即右指针与V换位
+		
+		//更简单的理解，因为以第一个值为参照，第一个值在左侧，换到第一位的应是小于参照值的，右侧指针到第一个小于参照值的值；
 		int temp = v; //v即最低位 datas[lo]; //切分元素值
 		v = datas[j];
 		datas[j] = temp;
@@ -361,4 +365,69 @@ public class SortUtil {
 		merge(datas, lo, mid, hi);	
 	}
 	
+	
+	//堆排序
+	private boolean less(int i, int j) {
+		return pq[i] - pq[j] < 0;
+	}
+	//堆排序
+	private static boolean less(int[] datas ,int i, int j) {
+		return datas[i] - datas[j] < 0;
+	}
+	
+	private void exch(int i, int j) {
+		int temp = pq[i];
+		pq[i] = pq[j];
+		pq[j] = temp;
+	}
+	
+	//上浮 ： 由下至上的堆有序化
+	private void swim(int k) {
+		//还未浮到最上层，且子大于根时交换
+		while (k > 0 && less(k/2, k)) {
+			exch(k/2, k);
+			k = k/2;
+		}
+	}
+	
+	//下沉 ：由上向下的堆有序化  根从1开始 k的子为2*k
+	private void sink(int k) {
+		while (2 * k <= N) {
+			int j = 2 * k; //k节点的左子节点；
+			if (j < N && less(j, j + 1)) j++; //比较k节点的左右子节点，取较大的与父节点交换
+			if (!less(k, j)) break; //若父 > 子 表示命中，下沉结束；
+			exch(k, j);
+			k = j;
+		}
+	}
+	
+	//下沉 ：由上向下的堆有序化, 不需借助外部成员变量  根从0开始，k的子为2*k+1
+	private static void sink(int[] datas,int k, int count) {
+		while (2 * k + 1 <= count) {
+			int j = 2 * k + 1; //k节点的左子节点；
+			if (j < count && less(datas, j, j + 1)) j++; //比较k节点的左右子节点，取较大的与父节点交换
+			if (!less(datas, k, j)) break; //若父 > 子 表示命中，下沉结束；
+			exch(datas, k, j);
+			k = j;
+		}
+	}
+	
+	/**
+	 * 当根节点为1时，k的子节点：2*k， 2*k+1; k的父节点为 k/2;
+	 * 当根节点为0时，k的子节点：2*k + 1, 2*k + 2; k的父节点为(k - 1)/2;
+	 * @param datas
+	 */
+	public static void heapSort(int[] datas) {
+		int N = datas.length - 1;
+		for (int i = (N-1)/2; i >= 0; i--) { //先构造一个有序堆，从最后一个点的父节点开始   该树根为0
+			sink(datas, i, N);
+		}
+		
+		//因为堆有序时唯一可以确定的是根节点是最大值，因为根节点在最上层且只有一个元素
+		//所以可以取出根节点并与最后一个值换位，并将总数减一，剩下的所有在进行下沉
+		while (N > 0) {
+			exch(datas, 0, N--);
+			sink(datas, 0, N);
+		}
+	}
 }
