@@ -23,13 +23,13 @@ public class Master {
 			threadMap.put(Integer.toString(i), new Thread(worker, Integer.toString(i)));
 		}
 	}
-	
+		
 	public boolean isAllComplete() {
 		for (Entry<String, Thread> entry : threadMap.entrySet()) {
 			if (entry.getValue().getState() != Thread.State.TERMINATED) {
 				return false;
 			}
-		}
+		}	
 		return true;
 	}
 	
