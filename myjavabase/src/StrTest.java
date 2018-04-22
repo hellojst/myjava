@@ -1,3 +1,4 @@
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CyclicBarrier;
@@ -16,6 +17,5 @@ public class StrTest {
 		s1.intern();
 		String s2 = "ahh";
 		System.out.println(s1 == s2);
-		
 	}
 }

@@ -401,7 +401,7 @@ public class SortUtil {
 		}
 	}
 	
-	//下沉 ：由上向下的堆有序化, 不需借助外部成员变量  根从0开始，k的子为2*k+1
+	//下沉 ：由上向下的堆有序化（注意未插入前堆是有序化过的）, 不需借助外部成员变量  根从0开始，k的子为2*k+1
 	private static void sink(int[] datas,int k, int count) {
 		while (2 * k + 1 <= count) {
 			int j = 2 * k + 1; //k节点的左子节点；
