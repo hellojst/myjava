@@ -26,10 +26,11 @@ public class PhaserCompareCyclicBarrier {
 
 		};
 		System.out.println("程序开始执行"); //创建并启动三个线程
-		for (int i = 0; i < 3; i++) { //只要phaser不终结，主线程就循环等待
+		for (int i = 0; i < 3; i++) { 
 			new MyTestThread((char) (97 + i), phaser).start();
 		}
 		
+		//下方代码是为了让程序阻塞在此处是“程序结束”打印在最后一行；
 		phaser.register(); //将主线程主动增加到phaser中，此语句执行后phasr共管理4个线程
 		while (!phaser.isTerminated()) {
 			int n = phaser.arriveAndAwaitAdvance();
@@ -63,11 +64,12 @@ public class PhaserCompareCyclicBarrier {
 				for (int i = 0; i < 10; i++) {
 					System.out.print(c + "");
 				}
-				// 打印完当前字母后，将其更新为其后第三个字母，
+				// 打印完当前字母后，将其更新为其后第三个字母，  等待判断若还是注册就开始下次执行run方法
 				c = (char) (c + 3);
 				if (c > 'z') {
 					// 如果超出了字母z,则在phaser中动态减少一个线程，并退出循环结束本线程
 					// 当三个工作线程都执行完此语句，phaser就只剩一个主线程
+					//跳出run循环的条件，就是去注册；
 					phaser.arriveAndDeregister();
 					break;
 				} else {
