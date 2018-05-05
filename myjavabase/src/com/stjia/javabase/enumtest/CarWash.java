@@ -1,6 +1,7 @@
 package com.stjia.javabase.enumtest;
 
 import java.util.EnumSet;
+import java.util.concurrent.Future;
 
 /**
  * @author stjia

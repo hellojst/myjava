@@ -1,5 +1,7 @@
 package com.stjia.javabase.collector;
 
+import java.util.Arrays;
+
 /**
  * map的生产器
  * @author stjia

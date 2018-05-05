@@ -1,6 +1,7 @@
 package com.stjia.javabase.collector;
 
 import java.util.LinkedHashMap;
+import java.util.concurrent.FutureTask;
 
 /**
  * @author stjia
