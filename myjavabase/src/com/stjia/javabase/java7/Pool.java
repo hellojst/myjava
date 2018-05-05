@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 
 /**
+ * 信号量Semaphore实现池的功能
  * @author stjia
  * @date 2018年5月5日
  */
