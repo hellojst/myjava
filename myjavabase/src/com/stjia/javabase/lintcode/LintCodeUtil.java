@@ -27,4 +27,40 @@ public class LintCodeUtil {
     	return j;
     }
 
+    /**
+     * 请编写一个函数，其功能是将输入的字符串反转过来。
+     * @param s
+     * @return
+     */
+    public static String reverseString(String s) {
+    	if (s.length() == 1) {
+			return s;
+		}
+        int index = s.length()/2;
+        String s1 = s.substring(0, index);
+        String s2 = s.substring(index, s.length());
+        return reverseString(s2) + reverseString(s1);
+    }
+    
+    /**
+     * 请编写一个函数，其功能是将输入的字符串反转过来。
+     * @param s
+     * @return
+     */
+    public static String reverseStr(String s) {
+    	if (s.isEmpty()) {
+			return s;
+		}
+    	char[] ss = s.toCharArray();
+    	int length = ss.length;
+    	int mid = length / 2;
+    	for(int i = 0; i < mid; i++) {
+			char temp = ss[i];
+			ss[i] = ss[length - i -1];
+			ss[length - i -1] = temp;
+		}
+    	return new String(ss);
+    }
+    
+
 }

@@ -20,6 +20,9 @@ public class Maintest {
 		int[] b = new int[] {1,2,2};
 		result = LintCodeUtil.removeDuplicates(b);
 		System.out.println(result);
+		String string = LintCodeUtil.reverseString("hello");
+		string = LintCodeUtil.reverseStr("a.");
+		System.out.println(string);
 	}
 
 }
