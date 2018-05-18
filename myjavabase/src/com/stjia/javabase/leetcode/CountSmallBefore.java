@@ -1,4 +1,4 @@
-package com.stjia.javabase.lintcode;
+package com.stjia.javabase.leetcode;
 
 import java.util.ArrayList;
 import java.util.List;

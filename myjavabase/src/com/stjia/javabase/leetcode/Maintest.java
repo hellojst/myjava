@@ -1,4 +1,4 @@
-package com.stjia.javabase.lintcode;
+package com.stjia.javabase.leetcode;
 
 /**
  * 
@@ -18,11 +18,16 @@ public class Maintest {
 		before.countOfSmallerNumberII2(a);
 		
 		int[] b = new int[] {1,2,2};
-		result = LintCodeUtil.removeDuplicates(b);
+		result = LeetCodeUtil.removeDuplicates(b);
 		System.out.println(result);
-		String string = LintCodeUtil.reverseString("hello");
-		string = LintCodeUtil.reverseStr("a.");
+		String string = LeetCodeUtil.reverseString("hello");
+		string = LeetCodeUtil.reverseStr("a.");
 		System.out.println(string);
+		
+		int i = LeetCodeUtil.rob(new int[] {1,2,3,5});
+		i= LeetCodeUtil.rob2(new int[] {1,2,3,1});
+		System.out.println(i);
+		
 	}
 
 }

@@ -1,5 +1,7 @@
 package com.stjia.javabase.leetcode;
 
+import com.sun.org.apache.xalan.internal.xsltc.compiler.util.ResultTreeType;
+
 /**
  * 
  * @author stjia
@@ -111,21 +113,52 @@ public class LeetCodeUtil {
 		}
 		return b;
 	}
-	
+
 	/**
 	 * 请编写一个函数，使其可以删除某个链表中给定的（非末尾的）节点，您将只被给予要求被删除的节点
+	 * 
 	 * @param node
 	 */
 	public static void deleteNode(ListNode node) {
-        ListNode node1 = node.next;
-        node.next = node.next.next;
-        node.val = node1.val;
-    }
+		ListNode node1 = node.next;
+		node.next = node.next.next;
+		node.val = node1.val;
+		node1.next = null;
+	}
+
+	/**
+	 * 给定一个二叉树，找出其最大深度。
+     *   二叉树的深度为根节点到最远叶子节点的最长路径上的节点数。
+	 * @param root
+	 * @return
+	 */
+	public static int maxDepth(TreeNode root) {
+		return count(root);
+	}
+
+	private static int count(TreeNode root) {
+		if (root == null) {
+			return 0;
+		}
+		return Math.max(count(root.left) + 1, count(root.right) + 1);
+	}
 
 	private static class ListNode {
 		int val;
 		ListNode next;
+
+		@SuppressWarnings("unused")
 		ListNode(int x) {
+			val = x;
+		}
+	}
+
+	private class TreeNode {
+		int val;
+		TreeNode left;
+		TreeNode right;
+
+		TreeNode(int x) {
 			val = x;
 		}
 	}
