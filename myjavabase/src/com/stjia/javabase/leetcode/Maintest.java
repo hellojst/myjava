@@ -1,5 +1,13 @@
 package com.stjia.javabase.leetcode;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+
+import java.util.ArrayList;
+
+import org.junit.validator.ValidateWith;
+
+import com.stjia.javabase.leetcode.LeetCodeUtil.Solution;
+
 /**
  * 
  * @author stjia
@@ -28,6 +36,19 @@ public class Maintest {
 		i= LeetCodeUtil.rob2(new int[] {1,2,3,1});
 		System.out.println(i);
 		
+//		Solution solution = new LeetCodeUtil.Solution(new int[] {1,2,3,4,5}); //静态 内部类用法
+		
+		Solution solution = new LeetCodeUtil().new Solution(new int[] {1,2,3,4,5}); //非静态   内部类用法
+		printArray(solution.shuffle());
+		printArray(solution.reset());
+		printArray(solution.shuffle());
+	}
+	
+	private static void printArray(int[] array) {
+			for (int i : array) {
+				System.out.print(i);
+			}
+			System.out.println();
 	}
 
 }

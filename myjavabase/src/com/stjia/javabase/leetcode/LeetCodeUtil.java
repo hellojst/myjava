@@ -1,6 +1,11 @@
 package com.stjia.javabase.leetcode;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.util.ResultTreeType;
+import static org.hamcrest.CoreMatchers.instanceOf;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 /**
  * 
@@ -143,6 +148,10 @@ public class LeetCodeUtil {
 		return Math.max(count(root.left) + 1, count(root.right) + 1);
 	}
 
+	private List<Integer> TempContainer = new ArrayList<>();
+	
+	
+	
 	private static class ListNode {
 		int val;
 		ListNode next;
@@ -162,4 +171,34 @@ public class LeetCodeUtil {
 			val = x;
 		}
 	}
+	
+	 class Solution {
+
+		private int[] nums;
+	    public Solution(int[] nums) {
+	        this.nums = nums;
+	    }
+	    
+	    /** Resets the array to its original configuration and return it. */
+	    public int[] reset() {
+	        return nums;
+	    }
+	    
+	    /** Returns a random shuffling of the array. */
+	    public int[] shuffle() {
+	        int[] shuffleArray = nums.clone();
+	        //类比洗牌的方法，每个位置都进行移动
+	        Random random = new Random();
+	        int length = shuffleArray.length;
+	        for (int i = 0; i < length; i++) {
+				int newPosition = random.nextInt(length); //随机产生新位置
+				int temp = shuffleArray[i];
+				shuffleArray[i] = shuffleArray[newPosition];
+				shuffleArray[newPosition] = temp;
+			}
+	        
+	        return shuffleArray;
+	    }
+	}
+
 }
