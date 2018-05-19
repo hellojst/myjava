@@ -42,6 +42,8 @@ public class Maintest {
 		printArray(solution.shuffle());
 		printArray(solution.reset());
 		printArray(solution.shuffle());
+		
+		System.out.println(LeetCodeUtil.fizzBuzz(15));
 	}
 	
 	private static void printArray(int[] array) {

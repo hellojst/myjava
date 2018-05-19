@@ -148,9 +148,24 @@ public class LeetCodeUtil {
 		return Math.max(count(root.left) + 1, count(root.right) + 1);
 	}
 
-	private List<Integer> TempContainer = new ArrayList<>();
+    public static List<String> fizzBuzz(int n) {
+        List<String> output = new ArrayList<>();
+        for(int i = 1; i <= n; i++) {
+        	String temp = "";
+        	if(isFizz(i)) temp += "Fizz";
+        	if(isBuzz(i)) temp += "Buzz";
+        	output.add(temp.isEmpty() ? (i + "") : temp);
+        }
+        return output;
+    }
 	
+    private static boolean isFizz(int n) {
+    	return n%3 == 0;
+    }
 	
+    private static boolean isBuzz(int n) {
+    	return n%5 == 0;
+    }
 	
 	private static class ListNode {
 		int val;
