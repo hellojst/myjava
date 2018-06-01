@@ -1,9 +1,5 @@
 package com.stjia.javabase.leetcode;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.nullValue;
-
-import java.nio.channels.GatheringByteChannel;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -12,10 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Random;
-
-import org.hamcrest.core.IsEqual;
-
-import jdk.internal.jimage.decompressor.ResourceDecompressor;
 
 /**
  * 
