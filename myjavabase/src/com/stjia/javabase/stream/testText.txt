@@ -1,0 +1,4 @@
+﻿流测试文件test
+stream test file
+tesst 123 567,jgient;
+

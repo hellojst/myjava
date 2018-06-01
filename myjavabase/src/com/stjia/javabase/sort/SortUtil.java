@@ -336,7 +336,7 @@ public class SortUtil {
 	 * @param hi
 	 */
 	private static void merge(int[] datas, int lo, int mid, int hi) {
-		int i = lo, j = mid + 1;
+		int i = lo, j = mid + 1; //前后部分指针起点
 		for(int k = lo; k <= hi; k++) aux[k] = datas[k]; //构建副本
 		for (int k = lo; k <= hi; k++) { // 归并，
 			if (i > mid) datas[k] = aux[j++]; //左半边用尽就去右半边元素
@@ -357,9 +357,11 @@ public class SortUtil {
 		return datas;
 	}
 	
+	//递归实现
 	public static void hi2loMergerSort(int[] datas, int lo, int hi) {
 		if (hi <= lo) return;
 		int mid = lo + (hi - lo)/2;
+		//差分，将这两部分进行递归；
 		hi2loMergerSort(datas, lo, mid);
 		hi2loMergerSort(datas, mid + 1, hi);
 		merge(datas, lo, mid, hi);	

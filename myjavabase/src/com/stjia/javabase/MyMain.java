@@ -133,8 +133,6 @@ public class MyMain {
 			threadPool.start(new MyThread("Test next ThreadPool - " + i));
 		}
 		
-		
-		
 		                                 
 	}
 }

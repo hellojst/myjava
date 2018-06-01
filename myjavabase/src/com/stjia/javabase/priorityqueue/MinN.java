@@ -1,5 +1,7 @@
 package com.stjia.javabase.priorityqueue;
 
+import java.util.PriorityQueue;
+
 /**
  * @author stjia
  * @date 2018年4月20日
@@ -18,6 +20,8 @@ public class MinN {
 		}
 
 		System.out.println(maxPriorityQueue);
+		
+		PriorityQueue<Integer> queue = new PriorityQueue<>(30);
 	}
 
 }
