@@ -12,5 +12,7 @@ public class MyLeetCodeMain {
 		
 		System.out.println(Integer.toString(-214).toCharArray());
 		System.out.println(LeetCodeUtils.reverseInt(-2100));
+		System.out.println(LeetCodeUtils.isAnagram("anagram", "nagaram"));
+		System.out.println(LeetCodeUtils.maxProfit4Once(new int[] {1,2}));
 	}
 }

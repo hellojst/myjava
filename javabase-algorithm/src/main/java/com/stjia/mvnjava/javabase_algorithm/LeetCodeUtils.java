@@ -1,5 +1,7 @@
 package com.stjia.mvnjava.javabase_algorithm;
 
+import java.util.Iterator;
+
 /**
  * @author stjia
  * @date 2018年6月2日
@@ -55,4 +57,73 @@ public class LeetCodeUtils {
 			return 1.0f / (m << (-1 - n));
 		}
     }
+    
+    /**
+     * 给定两个字符串 s 和 t ，编写一个函数来判断 t 是否是 s 的一个字母异位词。
+     * @param s
+     * @param t
+     * @return
+     */
+    public static boolean isAnagram(String s, String t) {
+        char[] ss = s.toCharArray();
+        char[] ts = t.toCharArray();
+        int sl = ss.length, tl = ts.length;
+        if (sl != tl) {
+			return false;
+		}
+        int lastIndex = ss.length - 1;
+		for (int i = 0; i < ts.length; i++) {
+			for(int j = 0; j <= lastIndex; j++) {
+				if (j == lastIndex && ts[i] != ss[lastIndex]) {
+					return false;
+				}
+				if (ts[i] == ss[j]) {
+					char temp = ss[j];
+					ss[j] = ss[lastIndex];
+					ss[lastIndex] = temp;
+					lastIndex--;
+					break;
+				}
+			}
+		}
+		if (lastIndex >= 0) {
+			return false;
+		}
+		return true;
+    }
+    
+    /**
+     * 给定一个数组，它的第 i 个元素是一支给定股票第 i 天的价格。
+
+如果你最多只允许完成一笔交易（即买入和卖出一支股票），设计一个算法来计算你所能获取的最大利润。
+
+注意你不能在买入股票前卖出股票。
+	 *
+	 * 分治思想 转化为利润数组，则为求最大连续子串
+     * @param prices
+     * @return
+     */
+    public static int maxProfit4Once(int[] prices) {
+    	if (prices == null || prices.length < 2) {
+			return 0;
+		}
+    	int[] profits = new int[prices.length - 1]; //每天之间的利润数组
+    	for (int i = 0; i < profits.length; i++) {
+			profits[i] = prices[i + 1] - prices[i];
+		}
+    	
+    	int temp = 0;
+    	int maxprofits = 0;
+    	for(int i = 0; i < profits.length; i++) {
+    		if (temp + profits[i] > 0)  temp = temp + profits[i]; // 如果加上下一天仍是获利的则可继续此连续子串
+			else temp = 0; // 如果加上下一天后子串和为负，则此子串没有往下加的必要了，重置子串开始新的子串
+    		
+    		maxprofits = Math.max(temp, maxprofits);
+				
+    	}
+    	
+    	return maxprofits;
+    }
+
+
 }

@@ -38,5 +38,10 @@ class LeetCodeTest {
 		assertEquals(-12, LeetCodeUtils.reverseInt(-2100));
 		assertEquals(0, LeetCodeUtils.reverseInt(1345678903));
 	}
+	
+	@Test
+	void testmaxProfit4Once() {
+		assertEquals(1, LeetCodeUtils.maxProfit4Once(new int[] {1,2}));
+	}
 
 }
