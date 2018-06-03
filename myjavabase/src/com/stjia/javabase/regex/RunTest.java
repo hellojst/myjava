@@ -11,20 +11,7 @@ import java.util.regex.Pattern;
 public class RunTest {
 	
 	public static void main(String[] args) {
-		String target = "hello world, you are my whole world yingchun!";
-		String reg = "(\b\\w+\b)";
-		Pattern pattern = Pattern.compile(reg);
-		Matcher matcher = pattern.matcher(target);
-		matcher.find();
-		int n = matcher.groupCount();
-		if (matcher.find()) {
-			
-			String string = matcher.group(0);
-			StringBuilder sb = new StringBuilder();
-			sb.append(string);
-			sb.append("<html>").append(matcher.group(0)).append("</html>\n");
-			System.out.println(sb.toString());
-		}
+		RegexUtils.simpleRegexTest();
 	}
 
 }
