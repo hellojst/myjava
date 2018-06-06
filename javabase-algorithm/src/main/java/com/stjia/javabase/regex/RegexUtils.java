@@ -118,4 +118,33 @@ public class RegexUtils {
 		return sb.toString();
 	}
 	
+	/**
+	 * 将字符串中的摄氏温度转为华氏温度
+	 * @return
+	 */
+	public static String temperatureTransfer(String content) {
+		Matcher matcher = Pattern.compile("(\\d+(?:\\.\\d*)?)\\s*C").matcher(content); //使用捕获组捕获数字; 
+		StringBuffer result = new StringBuffer(); //生成用于替换的中间副本
+		while(matcher.find()) {
+			float celsius = Float.parseFloat(matcher.group(1)); //将匹配到的值转为浮点数
+//			String two = matcher.group(2); // ?:为非捕获组，将？：去掉才能匹配点号及其后数字
+			int fahrenheit = (int) (celsius * 9 / 5 + 32);
+			matcher.appendReplacement(result, fahrenheit + "F");
+		}
+		matcher.appendTail(result);
+		return result.toString();
+	}
+	
+	/**
+	 * 原地 查找-替换
+	 */
+	public static String replaceNomove(String regex, String context) {
+		StringBuilder stringBuilder = new StringBuilder(context); // 使用stringbuilder的原因是其实可变的，而string是final的，要用新string去接受返回值
+		//而stringbuilder是可变的，可不用设接收值，就在本身修改
+		Matcher matcher = Pattern.compile(regex).matcher(stringBuilder);
+		while (matcher.find()) {
+			stringBuilder.replace(matcher.start(), matcher.end(), matcher.group().toLowerCase()); // 进行新值换旧值
+		}
+		return stringBuilder.toString();
+	}
 }
