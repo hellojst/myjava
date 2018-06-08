@@ -1,9 +1,12 @@
 package com.stjia.mvnjava.javabase_algorithm;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.nullValue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author stjia
@@ -202,22 +205,21 @@ public class LeetCodeUtils {
 
 	/**
 	 * 给定一个二叉树，判断其是否是一个有效的二叉搜索树。 一个二叉搜索树具有如下特征： 节点的左子树只包含小于当前节点的数。
+	 * 节点的右子树只包含大于当前节点的数。 所有左子树和右子树自身必须也是二叉搜索树。 一个二叉搜索树具有如下特征： 节点的左子树只包含小于当前节点的数。
 	 * 节点的右子树只包含大于当前节点的数。 所有左子树和右子树自身必须也是二叉搜索树。
-	 * 一个二叉搜索树具有如下特征：
-     * 节点的左子树只包含小于当前节点的数。
-     * 节点的右子树只包含大于当前节点的数。
-     * 所有左子树和右子树自身必须也是二叉搜索树。
-     * 
-     * 该特质二叉树中序遍历的结果应为有序的  也可以保存下来前一个值，每次比较当前值与中序遍历的前一值大小关系，有错就返回不在继续
+	 * 
+	 * 该特质二叉树中序遍历的结果应为有序的 也可以保存下来前一个值，每次比较当前值与中序遍历的前一值大小关系，有错就返回不在继续
+	 * 
 	 * @param root
 	 * @return
 	 */
 	public static boolean isValidBST(TreeNode root) {
-		if (root == null) return true;
-			
+		if (root == null)
+			return true;
+
 		List<TreeNode> nodes = treeNodes(root, new ArrayList<TreeNode>());
 		int length = nodes.size();
-		for(int i = 0; i < length - 1; i++) {
+		for (int i = 0; i < length - 1; i++) {
 			if (nodes.get(i).val >= nodes.get(i + 1).val) {
 				return false;
 			}
@@ -239,6 +241,178 @@ public class LeetCodeUtils {
 
 	}
 
+	/**
+	 * 有效的数独 判断一个 9x9 的数独是否有效。只需要根据以下规则，验证已经填入的数字是否有效即可。 数字 1-9 在每一行只能出现一次。 数字 1-9
+	 * 在每一列只能出现一次。 数字 1-9 在每一个以粗实线分隔的 3x3 宫内只能出现一次。
+	 * 
+	 * @param board
+	 * @return 解题思路：不用取每一个数验证其是否有横纵和块中有重复的，会有大量的重复验证 1.验证每一行是否有重复值 ：有就不可能是数独
+	 *         2.验证每一列是否有重复值 ：有就不可能是数独 3.验证每一个3x3的块是否有重复值 ：有就不可能是数独
+	 */
+	public static boolean isValidSudoku(char[][] board) {
+		// 验证行
+		for (int i = 0; i < 9; i++) { // 行 row
+			List<Character> cols = new ArrayList<Character>();
+			for (int j = 0; j < 9; j++) {
+				char ch = board[i][j];
+				if (isNumberChar(ch)) {
+					if (!cols.isEmpty() && cols.contains(ch)) {
+						return false;
+					} else {
+						cols.add(ch);
+					}
+				}
+			}
+		}
+
+		// 验证列
+		for (int i = 0; i < 9; i++) { // 列 col
+			List<Character> cols = new ArrayList<Character>();
+			for (int j = 0; j < 9; j++) {
+				char ch = board[j][i];
+				if (isNumberChar(ch)) {
+					if (!cols.isEmpty() && cols.contains(ch)) {
+						return false;
+					} else {
+						cols.add(ch);
+					}
+				}
+			}
+		}
+
+		boolean validateResult = true;
+		// 验证每一个立方块
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				validateResult = validateResult && validateBlock(i, j, board);
+			}
+		}
+		return validateResult;
+	}
+
+	private static boolean isNumberChar(char ch) {
+		return ch >= '0' && ch <= '9';
+	}
+
+	private static boolean validateBlock(int i, int j, char[][] board) {
+		List<Character> chars = new ArrayList<Character>();
+		for (int k = 0; k < 3; k++) {
+			for (int t = 0; t < 3; t++) {
+				char ch = board[i * 3 + k][j * 3 + t];
+				if (!isNumberChar(ch)) {
+					continue;
+				}
+				if (!chars.isEmpty() && chars.contains(ch)) {
+					return false;
+				} else {
+					chars.add(ch);
+				}
+			}
+		}
+		return true;
+	}
+
+	public static int myAtoi(String str) {
+		int min = (int) (Math.pow(2, 31)*(-1));
+		int max = (int) (Math.pow(2, 31) - 1);
+		int result = 0;
+		int index = 0;
+		boolean isNumber = false;
+		char[] chs = str.toCharArray();
+		for (int i = 0; i < chs.length; i++) {
+			if (volidateChar(chs[i]) && !isNumber) {
+				index = i;
+				isNumber = true;
+			} else if(chs[i] >= '0' && chs[i] <= '9') {
+				isNumber = true;
+				index = i;
+			} else if (chs[i] == ' ' && !isNumber) {
+				continue;
+			} else {
+				break;
+			}
+		}
+		if (index == 0 && !isNumber) {
+			return 0;
+		}
+		String sub = str.substring(0, index + 1);
+		sub = sub.trim();
+		if (sub.length() == 1) {
+			if (sub.charAt(0) < '0' || sub.charAt(0) > '9') {
+				return 0;
+			}
+		}
+		if (sub.isEmpty()) {
+			return 0;
+		}
+		int indexChar = 0;
+		char opch = 0;
+		for(int i = 0; i <  sub.length(); i++) {
+			if (sub.charAt(i) == '0') {
+				indexChar = i;
+				continue;
+			} else  if (volidateChar(sub.charAt(i))) {
+				opch = sub.charAt(i);
+			}else {
+				indexChar = i;
+				break;
+			}
+		}
+		sub = (opch + sub.substring(indexChar)).trim();
+		if (sub.length() > 12) {
+			if (sub.contains("-")) {
+				return min;
+			}
+			return max;
+		}
+
+		long longvalue = Long.parseLong(sub);
+		if (longvalue > max) {
+			return max;
+		} else if (longvalue < min) {
+			return min;
+		} else {
+			return (int) longvalue;
+		}
+	}
+
+	private static boolean volidateChar(char ch) {
+		if (ch == '-')
+			return true;
+		if (ch == '+')
+			return true;
+		return false;
+	}
+
+	public static int myAtoiRegex(String str) {
+		int result = 0;
+		String regex = "\\s*([-+]?\\d+)*.*";
+		Pattern pattern = Pattern.compile(regex);
+		Matcher matcher = pattern.matcher(str);
+		if (matcher.find()) {
+			String value = matcher.group(1);
+			String matchZeroRegex = "[-+]*(0*)\\w*";
+			Matcher zeroMatcher = Pattern.compile(matchZeroRegex).matcher(value);
+			
+			while (zeroMatcher.find()) {
+				String groupstr = zeroMatcher.group(1);
+			    value = value.replaceFirst(groupstr, "");
+			}
+			if (value.length() > 12) {
+				return 0;
+			}
+
+			long longvalue = Long.parseLong(value);
+			if (longvalue >>> 32 > 0) {
+				return 0;
+			} else {
+				return (int) longvalue;
+			}
+
+		}
+		return result;
+	}
+
 	static class ListNode {
 		int val;
 		ListNode next;
@@ -253,6 +427,7 @@ public class LeetCodeUtils {
 		int val;
 		TreeNode left;
 		TreeNode right;
+
 		TreeNode(int x) {
 			this.val = x;
 		}
