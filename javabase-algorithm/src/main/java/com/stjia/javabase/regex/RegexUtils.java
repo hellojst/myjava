@@ -1,5 +1,6 @@
 package com.stjia.javabase.regex;
 
+import java.security.KeyStore.PrivateKeyEntry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,6 +12,8 @@ import org.w3c.dom.Text;
  * @date 2018年5月25日
  */
 public class RegexUtils {
+	private static String numberRegex = "(\\d+(?:\\.\\d*)?)\\s*C";
+	private static Pattern numberPattern = Pattern.compile(numberRegex);
 	
 	/**
 	 * 一个简单的正则匹配测试
@@ -123,7 +126,7 @@ public class RegexUtils {
 	 * @return
 	 */
 	public static String temperatureTransfer(String content) {
-		Matcher matcher = Pattern.compile("(\\d+(?:\\.\\d*)?)\\s*C").matcher(content); //使用捕获组捕获数字; 
+		Matcher matcher = numberPattern.matcher(content); //使用捕获组捕获数字; 
 		StringBuffer result = new StringBuffer(); //生成用于替换的中间副本
 		while(matcher.find()) {
 			float celsius = Float.parseFloat(matcher.group(1)); //将匹配到的值转为浮点数
@@ -144,6 +147,24 @@ public class RegexUtils {
 		Matcher matcher = Pattern.compile(regex).matcher(stringBuilder);
 		while (matcher.find()) {
 			stringBuilder.replace(matcher.start(), matcher.end(), matcher.group().toLowerCase()); // 进行新值换旧值
+		}
+		return stringBuilder.toString();
+	}
+	
+	/**
+	 *  长度变化的替换
+	 * @param regex
+	 * @param context
+	 * @return
+	 */
+	public static String replaceLenthChange(String regex, String context) {
+		StringBuilder stringBuilder = new StringBuilder(context);
+		Matcher matcher = Pattern.compile("\\b[\\p{Lu}\\p{Lt}]+\\b").matcher(stringBuilder);
+		int matchPosition = 0;
+		while (matcher.find(matchPosition)) {
+			matchPosition = matcher.end();
+			stringBuilder.replace(matcher.start(), matcher.end(), "<b>" +matcher.group().toLowerCase() + "</b>");
+			matchPosition += 7;
 		}
 		return stringBuilder.toString();
 	}

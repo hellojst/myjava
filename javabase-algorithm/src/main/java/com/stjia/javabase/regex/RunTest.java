@@ -22,6 +22,9 @@ public class RunTest {
 		System.out.println(RegexUtils.appendReplace("\\w+", "XXX", "---->abindg++jing<----"));
 		System.out.println(RegexUtils.temperatureTransfer("from 36.3C to 40.1C."));
 		System.out.println(RegexUtils.replaceNomove("\\b[\\p{Lu}\\p{Lt}]+\\b", "It's SO very RUDE to shout!"));
+		System.out.println(RegexUtils.replaceLenthChange("\\b[\\p{Lu}\\p{Lt}]+\\b", "It's SO very RUDE to shout!"));
+		
+		
 	}
 
 }
