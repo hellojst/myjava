@@ -46,6 +46,8 @@ public class MyLeetCodeMain {
 		System.out.println(LeetCodeUtils.isValidSudoku(shudu));
 		System.out.println(LeetCodeUtils.myAtoi("   -000231l1361065549"));
 		System.out.println(LeetCodeUtils.myAtoiRegex("   -00020031l1361065549"));
+		System.out.println(LeetCodeUtils.hammingWeight(125));
+		System.out.println(LeetCodeUtils.countPrimes(10));
 	}
 
 	private static void printArray(int[] array) {

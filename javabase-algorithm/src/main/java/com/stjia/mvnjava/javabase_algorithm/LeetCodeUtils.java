@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.swing.plaf.basic.BasicScrollPaneUI.HSBChangeListener;
+
 /**
  * @author stjia
  * @date 2018年6月2日
@@ -384,7 +386,16 @@ public class LeetCodeUtils {
 		return false;
 	}
 
+	/**
+	 * 在找到第一个非空字符之前，需要移除掉字符串中的空格字符。如果第一个非空字符是正号或负号，选取该符号，
+	 * 并将其与后面尽可能多的连续的数字组合起来，这部分字符即为整数的值。如果第一个非空字符是数字，
+	 * 则直接将其与之后连续的数字字符组合起来，形成整数。
+	 * @param str
+	 * @return
+	 */
 	public static int myAtoiRegex(String str) {
+		int min = (int) (Math.pow(2, 31)*(-1));
+		int max = (int) (Math.pow(2, 31) - 1);
 		int result = 0;
 		String regex = "\\s*([-+]?\\d+)*.*";
 		Pattern pattern = Pattern.compile(regex);
@@ -394,17 +405,22 @@ public class LeetCodeUtils {
 			String matchZeroRegex = "[-+]*(0*)\\w*";
 			Matcher zeroMatcher = Pattern.compile(matchZeroRegex).matcher(value);
 			
-			while (zeroMatcher.find()) {
+			if (zeroMatcher.find()) {
 				String groupstr = zeroMatcher.group(1);
 			    value = value.replaceFirst(groupstr, "");
 			}
 			if (value.length() > 12) {
-				return 0;
+				if (value.contains("-")) {
+					return min;
+				}
+				return max;
 			}
 
 			long longvalue = Long.parseLong(value);
-			if (longvalue >>> 32 > 0) {
-				return 0;
+			if (longvalue > max) {
+				return max;
+			} else if (longvalue < min) {
+				return min;
 			} else {
 				return (int) longvalue;
 			}
@@ -413,6 +429,127 @@ public class LeetCodeUtils {
 		return result;
 	}
 
+	/**
+	 * 给定一个 haystack 字符串和一个 needle 字符串，在 haystack 字符串中找出 needle 
+	 * 字符串出现的第一个位置 (从0开始)。如果不存在，则返回  -1。
+	 * @param haystack
+	 * @param needle
+	 * @return
+	 */
+    public static int strStr(String haystack, String needle) {
+        if (needle == null || needle.isEmpty()) {
+			return 0;
+		}
+        char[] haychs = haystack.toCharArray();
+        char[] neechs = needle.toCharArray();
+        int chylen = haychs.length;
+        int neelen = neechs.length;
+        for(int i = 0; i < chylen; i++) {
+        	if (neechs[0] != haychs[i]) {
+        		continue;
+			}
+        	//表示每一位是否都相等，遇到不相等的就返回false跳出循环
+        	boolean validate = true;
+        	for(int j = 0; j < neelen; j++) {
+        		//如果超出第一个字符范围，则为匹配不了返回-1；
+        		if (i + j >= chylen) {
+					return -1;
+				}
+        		if (neechs[j] == haychs[i + j]) {
+					continue;
+				} else {
+					validate = false;
+					break;
+				}
+        	}
+        	if (validate) {
+				return i;
+			}
+        }
+        return -1;
+    }
+	
+    /**
+     * 编写一个函数，输入是一个无符号整数，返回其二进制表达式中数字位数为 ‘1’ 的个数（也被称为汉明重量）。
+     * @param n
+     * @return
+     */
+    public static int hammingWeight(int n) {
+    	String bin = Integer.toBinaryString(n);
+    	char[] chs = bin.toCharArray();
+    	int sum = 0;
+    	for(int i = 0; i < chs.length; i++) {
+    		if (chs[i] == '1') {
+				sum++;
+			}
+    	}
+    	
+    	return sum;
+    }
+    
+    /**
+     * 超出时间限制
+     * 统计所有小于非负整数 n 的质数的数量。
+     * @param n
+     * @return
+     */
+    public static int countPrimesTimeLimit(int n) {
+    	n--;
+    	if (n < 2) {
+			return 0;
+		}
+        int sum = 0;
+        while(n >= 2) {
+        	boolean b = isPrimes(n);
+//        	boolean b = volidatePrimes(n);
+        	if (b) {
+        		System.out.print(n);
+				sum++;
+			}
+        	n--;
+        }
+        return sum;
+    }
+    
+    private static boolean volidatePrimes(int n) {
+    	int m = n - 1;
+    	while(n > 1 && m > 1) {
+    		if (n % m == 0) {
+				return false;
+			}
+    	}
+    	return true;
+    }
+    
+    //一个数如果在遍历到它的时候都没有被标记，则证明在1~m-1的区间内没有能够整除它的数，所以这个数一定是一个质数
+   // - 只需遍历1~√n，大于√n的数如果没有遍历到一定是质数，且也不需要将后续的倍数标记，因为√n*√n >= n
+    private static boolean isPrimes(int n){
+    	for(int i = 2; i <= Math.sqrt(n); i++) {
+    		if (n % i == 0) return false;
+    	}
+    	return true;
+    }
+    
+    /**
+     * 用一张Boolean型表去记录计算过的数哪些是质数哪些是偶数，先查表在计算
+     * @return
+     */
+    public static int countPrimes(int n){
+    	//boolean 默认为false；  若非质数改为true
+    	boolean[] booltable = new boolean[n + 1];
+    	int sum = 0;
+    	for(int i = 2; i < n; i++) {
+    		if (!booltable[i] && isPrimes(i)) {
+				sum++;
+				continue;
+			}
+    		for (int j = i; j < n; j = j + i) {
+				booltable[j] = true;
+			}
+    	}
+    	return sum;
+    }
+    
 	static class ListNode {
 		int val;
 		ListNode next;

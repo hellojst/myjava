@@ -168,4 +168,32 @@ public class RegexUtils {
 		}
 		return stringBuilder.toString();
 	}
+	
+	/**
+	 * matcher 的检索范围
+	 */
+	public static void regionRange(String html) {
+		//匹配模式为 忽略大小写，.为传统模式  *？:为忽略优先
+		Matcher mImg = Pattern.compile("(?id)<IMG\\s+(.*?)/?>").matcher(html);
+		//x为松散模式
+		//查找alt属性的matcher （应用于刚刚找到的IMG tag中）
+		Matcher mAlt = Pattern.compile("(?ix)\\b ALT \\s* =").matcher(html);
+		//查找换行符
+		Matcher mLine = Pattern.compile("\\n").matcher(html);
+		//对html中的每个image tag
+		while(mImg.find()){
+			//把查找范围局限在刚刚找到的tag中  捕获组1在字符串中的绝对偏移值
+			mAlt.region(mImg.start(1), mImg.end(1));
+			if (!mAlt.find()) {
+				//计算当前image tag之前的换行符数量
+				mLine.region(0, mImg.end());
+				int line = 1;
+				while(mLine.find()) {
+					line++;
+				}
+				//没找过就报错，输出找到的整个image tag
+				System.out.println("Missing ALT attribute in: " + mImg.group() + " in line nmber: " + line);
+			}
+		}
+	}
 }
