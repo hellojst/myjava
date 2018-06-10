@@ -1,8 +1,16 @@
 package com.stjia.javabase.regex;
 
+import static org.hamcrest.CoreMatchers.containsString;
+
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.imageio.ImageIO;
 
 import org.w3c.dom.Text;
 
@@ -95,6 +103,7 @@ public class RegexUtils {
 	 * @return
 	 */
 	public static String replacement(String regex, String newText, String context) {
+		//Matcher.quoteReplacement(newText) 对文本中包含的\ 或 $ 进行处理为文本
 		return Pattern.compile(regex).matcher(context).replaceAll(Matcher.quoteReplacement(newText));
 	} 
 	
@@ -194,6 +203,162 @@ public class RegexUtils {
 				//没找过就报错，输出找到的整个image tag
 				System.out.println("Missing ALT attribute in: " + mImg.group() + " in line nmber: " + line);
 			}
+		}
+	}
+	
+	/**
+	 * 关于单词边界  用transBound设定检索范围之外的透明性
+	 * 另一个边界：AnchoringBound 默认为true， 能匹配检索范围的边界，即使检索范围不是整个字符串， 禁用则锚点只能匹配检索范围内符合
+	 * 规定的位置
+	 * @return
+	 */
+	public static String transBound(String regex, String text, int startPosition, boolean useTransbound) {
+		StringBuilder result = new StringBuilder();
+		Matcher matcher = Pattern.compile(regex).matcher(text);
+		//默认为false 检索范围之外不透明
+		matcher.useTransparentBounds(useTransbound);
+		matcher.region(startPosition, matcher.regionEnd());
+		while(matcher.find()) {
+			matcher.appendReplacement(result, "-" + matcher.group().toUpperCase());
+		}
+		matcher.appendTail(result);
+		return result.toString();
+	}
+	
+	/**
+	 * 方法链  -- 构建器模式  //构造如下
+	 */
+	public static void MethodChaining(String regex, String text,int position, boolean transBound, boolean anchoringBound){
+		Matcher matcher = Pattern.compile(regex).matcher(text)
+				.region(position, text.length()) //重置检索范围
+				.useTransparentBounds(transBound) //检索范围边界
+				.useAnchoringBounds(anchoringBound); //锚点范围边界
+	}
+	
+	/**
+	 * 打印matcher的信息
+	 */
+	public static void printMatcherInfo() {
+		Matcher matcher = Pattern.compile("(\\w+)").matcher("ABC 123");
+		System.out.println(matcher.toString());
+		while(matcher.find()) {
+			System.out.println(matcher.toString());
+		}
+	}
+	
+	/**
+	 * 查询Matcher的目标字符串
+	 * @param matcher
+	 * @return
+	 */
+	public static String getTargetTextFromMatcher(Matcher matcher) {
+		//可作为类属性加载时预编译来提高效率，不用等每次调用才编译
+		Pattern separatorPattern = Pattern.compile("^"); 
+		//记住这些位置，以备备份之后恢复
+		int regionStart = matcher.regionStart();
+		int regionEnd = matcher.regionEnd();
+		Pattern pattern = matcher.pattern();
+		//只有这样才能返回字符串
+		String text = matcher.usePattern(separatorPattern).replaceFirst("");
+		
+		//恢复之前的记录 操作完成后不能改变原matcher的值
+		matcher.usePattern(pattern).region(regionStart, regionEnd);
+		//返回文本
+		return text;
+	}
+	
+	/**
+	 * 分割
+	 * @param regex
+	 * @param text
+	 * @return
+	 */
+	public static String[] split2Str(String regex, String text) {
+		String[] result = Pattern.compile(regex).split(text);
+		return result;
+	}
+	
+	/**
+	 * 带空格和有limit限制的分隔
+	 */
+	public static void splitWithSpaceAndLimit() {
+		String[] result1 = Pattern.compile("\\s*,\\s*").split(" , one, two,  ,, 3");
+		//默认limit=0 会忽略尾部空字符串 所以result2 为 空字符串和 "xx"
+		String[] result2 = Pattern.compile(":").split(":xx:");
+		//limit 默认为0， limit < 0 会保留数组结尾的空字符
+		String[] result3 = Pattern.compile(":").split(":xx:", -1);
+		String str = "ch, ja, un, un am, ls, cd";
+		//limit > 0 最多匹配limit个元素 即 正则表达式最多应用limit-1次
+		String[] result4 = Pattern.compile(",").split(str, 3);
+	}
+	
+	public static void addImgTag(String htmltext) throws MalformedURLException, IOException {
+		StringBuilder html = new StringBuilder(htmltext);
+		//匹配独立的<img> tags
+		Matcher mImg = Pattern.compile("(?id)<IMG\\s+(.*?)/?>").matcher(html);
+		Matcher mSrc = Pattern.compile("(?ix)\\bSRC     =(\\S+)").matcher(html);
+		Matcher mWidth = Pattern.compile("(?ix)\\bWIDTH = (\\S+)").matcher(html);
+		Matcher mHeight = Pattern.compile("(?ix)\\bHEIGHT= (\\S+)").matcher(html);
+		int imgMatchPointer = 0; //第一次搜索从字符串起始位置开始
+		while(mImg.find(imgMatchPointer)){
+			imgMatchPointer = mImg.end(); //下一次查找从这里开始
+			//从刚刚查找到的mimg中查找各字段
+			boolean hasSRC = mSrc.region(mImg.start(1), mImg.end(1)).find();
+			boolean hasWidth = mWidth.region(mImg.start(1), mImg.end(1)).find();
+			boolean hasHeight = mHeight.region(mImg.start(1), mImg.end(1)).find();
+			
+			if (hasSRC && (!hasHeight || !hasWidth)) {
+				BufferedImage image = ImageIO.read(new URL(mSrc.group(1)));
+				String size; //存放未提供 WIDTH，HEIGHT
+				if (hasWidth) {
+					size = "height = '" + Integer.parseInt(mWidth.group(1)) * image.getHeight() / image.getWidth() + "' ";
+				} else if (hasHeight) {
+					size = "width ='" + Integer.parseInt(mHeight.group(1)) * image.getWidth() / image.getHeight() + "' ";
+				} else {
+					size = "width=' " + image.getWidth() + "'" + 
+						   "height=' " + image.getHeight() + "' ";
+				}
+				html.indexOf(size, mImg.start(1)); //原地修改html
+				imgMatchPointer += size.length(); //更新匹配指针
+			}
+		}
+	}
+	
+	/**
+	 * 多验证
+	 * @param context
+	 * @param patterns
+	 * @return
+	 */
+	public static boolean volidateUseMorePattern(String context, Pattern... patterns) {
+		Matcher matcher = Pattern.compile("").matcher(context);
+		for(Pattern pattern : patterns) {
+			matcher.usePattern(pattern);
+			if (!matcher.find()) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public static void volidatePatternChain(String context) {
+		Pattern pAtEnd = Pattern.compile("\\G\\z");
+		Pattern pWord = Pattern.compile("\\G\\w+");
+		Pattern pNonHtml = Pattern.compile("\\G[^\\w<>&]+");
+		Pattern pImgTag = Pattern.compile("\\G(?i)<img\\s+([^>]+)>");
+		Pattern pLink = Pattern.compile("(\\G(?i)<A\\s+([^>]+)>)");
+		Pattern pLinkX = Pattern.compile("\\G(?i)</A>");
+		Pattern pEntity = Pattern.compile("\\G&(#\\d+;\\w+);");
+		
+		boolean needClose = false;
+		Matcher matcher = pAtEnd.matcher(context); //每个pattern都可生成matcher
+		while (!matcher.usePattern(pAtEnd).find()) {
+			if(matcher.usePattern(pWord).find()){
+				//.....
+			} else if (matcher.usePattern(pNonHtml).find()) {
+				//.....
+			}
+			//.......
 		}
 	}
 }

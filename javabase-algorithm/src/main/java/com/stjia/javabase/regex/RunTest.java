@@ -28,6 +28,30 @@ public class RunTest {
 				+ "<img size=9 />\n"
 				+ "</html>\n";
 		RegexUtils.regionRange(html);
+		System.out.println(RegexUtils.transBound("\\bcar\\b", "Madagascar is best seen by car or bike!", 7, false));
+		System.out.println(RegexUtils.transBound("\\bcar\\b", "Madagascar is best seen by car or bike!", 7, true));
+		RegexUtils.printMatcherInfo();
+		Matcher matcher = Pattern.compile("\\w+").matcher("123 QWE");
+		System.out.println(RegexUtils.getTargetTextFromMatcher(matcher));
+		String[] strs = RegexUtils.split2Str("[^\\w]+", "what's up? Doc");
+		String[] strs2 = RegexUtils.split2Str("[^\\w]+", "what's up? 小春春，你在干嘛");
+		//包含非ASCII字符时用\\w不能匹配，需用\p{L}
+		String[] strs3 = RegexUtils.split2Str("[^\\p{L}\\p{N}_]+", "what's up? 小春春；你在干嘛");
+		printStrArray(strs);
+		printStrArray(strs2);
+		printStrArray(strs3);
+		RegexUtils.splitWithSpaceAndLimit();
+	}
+	
+	private static void printStrArray(String[] strs) {
+		System.out.print("[");
+		for(int i = 0; i < strs.length; i++) {
+			System.out.print(strs[i]);
+			if (i != strs.length - 1) {
+				System.out.print(",");
+			}
+		}
+		System.out.println("]");
 	}
 
 }
