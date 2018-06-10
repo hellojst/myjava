@@ -550,6 +550,32 @@ public class LeetCodeUtils {
     	return sum;
     }
     
+    /**
+     * 给定一个数组 nums，编写一个函数将所有 0 移动到数组的末尾，同时保持非零元素的相对顺序。
+     * 思路：设一个前置指针（标记位）指向第一个0，非0就往后顺移直到找到第一个0并停止等待非0值来占据此位置；这样每
+     * 个非0值就只移动一次，避免了频繁移动
+     * @param nums
+     */
+    public static void moveZeroes(int[] nums) {
+    	int lenth = nums.length;
+    	int position = 0; //记录第一个0的位置
+        for(int i = 0; i < lenth; i++) {
+        	if (nums[i] == 0) {
+				continue;
+			}
+        	//i 位置前没有0 则position跟着往后移即可
+        	if (nums[i] != 0 && i == position) {
+				position++;
+        	// 遇到非0值且其前有0值就将该值放到position位置
+        	} else if (nums[i] != 0 && i > position) { 
+				nums[position] = nums[i];
+				nums[i] = 0;
+				position++;
+			} 
+        	
+        }
+    }
+    
 	static class ListNode {
 		int val;
 		ListNode next;

@@ -48,13 +48,20 @@ public class MyLeetCodeMain {
 		System.out.println(LeetCodeUtils.myAtoiRegex("   -00020031l1361065549"));
 		System.out.println(LeetCodeUtils.hammingWeight(125));
 		System.out.println(LeetCodeUtils.countPrimes(10));
+		int[] arrays = new int[] {0,1,0,3,12};
+		LeetCodeUtils.moveZeroes(arrays);
+		printArray(arrays);
 	}
 
 	private static void printArray(int[] array) {
-		for (int i : array) {
+		System.out.print("[");
+		for(int i = 0; i < array.length; i++) {
 			System.out.print(i);
+			if (i != array.length - 1) {
+				System.out.print(",");
+			}
 		}
-		System.out.println();
+		System.out.println("]");
 	}
 
 	private static void printNode(ListNode node) {
