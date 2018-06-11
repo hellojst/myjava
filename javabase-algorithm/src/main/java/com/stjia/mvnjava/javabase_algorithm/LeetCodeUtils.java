@@ -576,6 +576,52 @@ public class LeetCodeUtils {
         }
     }
     
+    /**
+     * 给定一个整数数组和一个目标值，找出数组中和为目标值的两个数。同样的元素不能被重复利用。
+     * @param nums
+     * @param target
+     * @return
+     */
+    public static int[] twoSum(int[] nums, int target) {
+        for(int i = 0; i < nums.length; i++) {
+        	int neededValue = target - nums[i];
+        	for(int j = i + 1; j < nums.length; j++) {
+        		if (neededValue == nums[j]) {
+					return new int[] {i, j};
+				}
+        	}
+        }
+        return null;
+    }
+    
+    /**
+     * 差不多需三次两两交换两个边一个斜线
+     * @param matrix
+     */
+    public static void rotate(int[][] matrix) {
+    	if (matrix == null || matrix.length == 0) {
+			return;
+		}
+        int col = matrix.length;
+        int row = matrix[0].length;
+        for(int i = 0; i < col / 2; i++) {
+        	for(int j = i; j < row - i; j++) {
+        		int temp = matrix[i][j];
+        		matrix[i][j] = matrix[col - j - 1][i];
+        		matrix[col - j - 1][i] = temp;
+        		
+        		temp = matrix[j][row - i - 1];
+        		matrix[j][row - i - 1] = matrix[col - i - 1][row - j -1];
+        		matrix[col - i - 1][row - j -1] = temp;
+        		
+        		temp = matrix[col - j - 1][i];
+        		matrix[col - j - 1][i] = matrix[j][row - i - 1];
+        		matrix[j][row - i - 1] = temp;
+        	}
+        }
+        
+    }
+    
 	static class ListNode {
 		int val;
 		ListNode next;
