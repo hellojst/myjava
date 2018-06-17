@@ -1,14 +1,11 @@
 package com.stjia.mvnjava.javabase_algorithm;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.nullValue;
-
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.swing.plaf.basic.BasicScrollPaneUI.HSBChangeListener;
 
 /**
  * @author stjia
@@ -594,33 +591,191 @@ public class LeetCodeUtils {
         return null;
     }
     
+    public static String countAndSay(int n) {
+    	String desStr = "1";
+        for(int i = 2; i <= n; i++) {
+        	desStr = composeStr(desStr.toCharArray());
+        }
+        return desStr;
+    }
+    
+    private static String composeStr(char[] chs) {
+    	StringBuilder stringBuilder = new StringBuilder();
+    	List<Character> chList = new ArrayList<Character>();
+    	for(int i = 0; i < chs.length; i++) {
+    		if (chList.contains(chs[i])) {
+				chList.add(chs[i]);
+			} else {
+				if (!chList.isEmpty()) {
+					stringBuilder.append(chList.size() + "" + chList.get(0));
+				}
+				chList.clear();
+				chList.add(chs[i]);
+			}
+    	}
+    	if (!chList.isEmpty()) {
+    		stringBuilder.append(chList.size() + "" + chList.get(0));
+		}
+    	return stringBuilder.toString();
+    }
+    
     /**
-     * 差不多需三次两两交换两个边一个斜线
-     * @param matrix
+     * 思路 先排序 在查找
+     * 给定一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a，b，c ，使得 a + b + c = 0 ？找出所有满足条件且不重复的三元组。
+注意：答案中不可以包含重复的三元组。
+     * @param nums
+     * @return
      */
-    public static void rotate(int[][] matrix) {
-    	if (matrix == null || matrix.length == 0) {
+    public static List<List<Integer>> threeSum(int[] nums) {
+    	List<List<Integer>> results = new ArrayList<List<Integer>>();
+    	if (nums.length < 3) {
+			return results;
+		}
+        sortArray(nums, 0, nums.length - 1);
+        int sepratorPostion = firstPositiveNum(nums); //正负分界点(含0)
+        if (sepratorPostion == nums.length) {
+			return results;
+		}
+        Set<List<Integer>> sets = new HashSet<List<Integer>>();
+        for (int i = 0; i <= sepratorPostion; i++) {
+			for (int j = i + 1; j < nums.length; j++) {
+				if (nums[i] + nums[j] > 0) {
+					break;
+				}
+				int needed = 0 - (nums[i] + nums[j]);
+				int firstPosition = sepratorPostion > j ? sepratorPostion : j + 1;
+				if (firstPosition > nums.length - 1) {
+					break;
+				}
+				int postion = binarySearch(nums, needed, firstPosition);
+				if (postion != -1) {
+					List<Integer> result = new ArrayList<Integer>();
+					result.add(nums[i]);
+					result.add(nums[j]);
+					result.add(nums[postion]);
+					sets.add(result);
+				}
+			}
+		}
+        results.addAll(sets);
+        return results;
+    }
+    
+    private static void sortArray(int[] nums, int lo, int hi) {
+    	if (lo >= hi) {
 			return;
 		}
-        int col = matrix.length;
-        int row = matrix[0].length;
-        for(int i = 0; i < col / 2; i++) {
-        	for(int j = i; j < row - i; j++) {
-        		int temp = matrix[i][j];
-        		matrix[i][j] = matrix[col - j - 1][i];
-        		matrix[col - j - 1][i] = temp;
-        		
-        		temp = matrix[j][row - i - 1];
-        		matrix[j][row - i - 1] = matrix[col - i - 1][row - j -1];
-        		matrix[col - i - 1][row - j -1] = temp;
-        		
-        		temp = matrix[col - j - 1][i];
-        		matrix[col - j - 1][i] = matrix[j][row - i - 1];
-        		matrix[j][row - i - 1] = temp;
-        	}
-        }
-        
+    	int partition = partition(nums, lo, hi);
+    	sortArray(nums, lo, partition - 1);
+    	sortArray(nums, partition + 1, hi);
     }
+    
+    private static int partition(int[] nums, int lo, int hi) {
+    	//参考值
+    	int value = nums[lo]; 
+    	int i = lo, j = hi + 1;
+    	while(true) {
+    		while(nums[++i] < value) {
+    			if(i >= hi) break;
+    		}
+    		while(nums[--j] > value) {
+    			if(lo >= j) break;
+    		}
+    		if (i >= j) {
+				break;
+			}
+    		int temp = nums[i]; //一个是先自增在取lo
+    		nums[i] = nums[j]; 
+    		nums[j] = temp;
+    	}
+    	int temp = nums[j];
+    	nums[j] = nums[lo];
+    	nums[lo] = temp;
+    	return j; 
+    }
+    
+    private static int binarySearch(int[] nums, int parm, int positon) {
+    	int lo = positon, hi = nums.length - 1;
+    	int middle = (lo + hi) / 2;
+    	if (nums[lo] == parm) {
+			return lo;
+		}
+    	if (nums[hi] == parm) {
+			return hi;
+		}
+    	while (lo < middle && middle < hi) {
+			if (nums[middle] > parm) {
+				hi = middle;
+				middle = (hi + lo) / 2;
+			} else if (nums[middle] < parm) {
+				lo = middle;
+				middle = (hi + lo) / 2;
+			} else {
+				return middle;
+			}
+		}
+    	return -1;
+    } 
+    
+    private static int firstPositiveNum(int[] nums) {
+    	int lo = 0;
+    	int hi = nums.length - 1;
+    	int middle = (hi + lo) / 2;
+    	if (nums[0] >= 0) {
+    		return 0;
+    	}
+    	if (nums[hi] <= 0) {
+			return hi;
+		}
+    	while (true) {
+    		
+			if (nums[middle] >= 0) {
+				if ((middle - 1 >= 0 && nums[middle - 1] < 0) || middle < 1) {
+					return middle;
+				}
+				
+				if (nums[middle - 1] >= 0) {
+					hi = middle;
+					middle = (hi + lo) / 2;
+				}
+			} else if (nums[middle] < 0) {
+				if (middle + 1 <= hi && nums[middle + 1] >= 0) {
+					return middle + 1;
+				}
+				lo = middle;
+				middle = (hi + lo) / 2;
+			}
+		}
+    }
+    
+    
+//    /**
+//     * 差不多需三次两两交换两个边一个斜线
+//     * @param matrix
+//     */
+//    public static void rotate(int[][] matrix) {
+//    	if (matrix == null || matrix.length == 0) {
+//			return;
+//		}
+//        int col = matrix.length;
+//        int row = matrix[0].length;
+//        for(int i = 0; i < col / 2; i++) {
+//        	for(int j = i; j < row - i; j++) {
+//        		int temp = matrix[i][j];
+//        		matrix[i][j] = matrix[col - j - 1][i];
+//        		matrix[col - j - 1][i] = temp;
+//        		
+//        		temp = matrix[j][row - i - 1];
+//        		matrix[j][row - i - 1] = matrix[col - i - 1][row - j -1];
+//        		matrix[col - i - 1][row - j -1] = temp;
+//        		
+//        		temp = matrix[col - j - 1][i];
+//        		matrix[col - j - 1][i] = matrix[j][row - i - 1];
+//        		matrix[j][row - i - 1] = temp;
+//        	}
+//        }
+//        
+//    }
     
 	static class ListNode {
 		int val;
