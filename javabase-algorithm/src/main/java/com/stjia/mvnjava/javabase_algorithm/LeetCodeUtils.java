@@ -1,5 +1,7 @@
 package com.stjia.mvnjava.javabase_algorithm;
 
+import static org.hamcrest.CoreMatchers.containsString;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -620,7 +622,7 @@ public class LeetCodeUtils {
     }
     
     /**
-     * 思路 先排序 在查找
+     * 思路 先排序 在查找   和为0 即前两项的和 与 第三项 在0 的侧， 最小值在负数区取， 最大值在正数区取，  第一个与第二个值的和需小于等于0；
      * 给定一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a，b，c ，使得 a + b + c = 0 ？找出所有满足条件且不重复的三元组。
 注意：答案中不可以包含重复的三元组。
      * @param nums
@@ -661,6 +663,12 @@ public class LeetCodeUtils {
         return results;
     }
     
+    /**
+     * 排序
+     * @param nums
+     * @param lo
+     * @param hi
+     */
     private static void sortArray(int[] nums, int lo, int hi) {
     	if (lo >= hi) {
 			return;
@@ -670,6 +678,13 @@ public class LeetCodeUtils {
     	sortArray(nums, partition + 1, hi);
     }
     
+    /**
+     * 快速排序的核心算法
+     * @param nums
+     * @param lo
+     * @param hi
+     * @return
+     */
     private static int partition(int[] nums, int lo, int hi) {
     	//参考值
     	int value = nums[lo]; 
@@ -694,6 +709,13 @@ public class LeetCodeUtils {
     	return j; 
     }
     
+    /**
+     * 二分查找， 
+     * @param nums
+     * @param parm 待查找对象
+     * @param positon 查找的起始位置
+     * @return 找到的对象的索引
+     */
     private static int binarySearch(int[] nums, int parm, int positon) {
     	int lo = positon, hi = nums.length - 1;
     	int middle = (lo + hi) / 2;
@@ -717,6 +739,11 @@ public class LeetCodeUtils {
     	return -1;
     } 
     
+    /**
+     * 记录 第一个非负数的位置  用于分区域查找
+     * @param nums
+     * @return
+     */
     private static int firstPositiveNum(int[] nums) {
     	int lo = 0;
     	int hi = nums.length - 1;
@@ -748,6 +775,77 @@ public class LeetCodeUtils {
 		}
     }
     
+    /**
+     * 跳跃游戏
+     * 从后往前遍历，给每一个位置设置一个标志位，表示能否通过这个位置到达终点。这个标志位的设置，
+     * 由这个点能否通过排在它后面的点到达终点。有两种可能性：一种是从该点可以直接到达终点，
+     * 另一种是通过排在后面的标志位为true的点到达终点。
+     * @param nums
+     * @return
+     */
+    public static boolean canJump(int[] nums) {
+        int lenth = nums.length;
+        boolean[] isCanJumps = new boolean[lenth];
+        isCanJumps[lenth - 1] = true;
+        //从后往前计算每个点是否可以跳到最后一步，以前面所得到的boolean可最终得到第一个位置是否可以跳到最后一个位置
+        for(int i = lenth - 2; i >= 0; i--) {
+        	if (nums[i] >= lenth - 1 - i) {
+				isCanJumps[i] = true;
+				continue;
+			}
+        	boolean isCanjump = false;
+        	for (int j = 1; j <= nums[i]; j++) {
+				if (isCanJumps[i + j]) {
+					isCanjump = true;
+					break;
+				}
+			}
+        	isCanJumps[i] = isCanjump;
+        }
+        return isCanJumps[0];
+    }
+    
+    /**
+     * 跳跃游戏 ---- 贪心算法
+     *  思路：贪心算法; 
+     * 从第一个数开始, 寻找可以一个可以跳最远的点; 
+     * 例1：3 1 2 4 1 0 0 
+     * 1.从第一个位置0,可以跳到位置1和位置2和位置3; 
+     * 2.如果跳到位置1,那么最远就可以跳到位置(1+1); 
+     * 3.如果跳到位置2,那么最远就可以跳到位置(2+2); 
+     * 4.如果跳到位置3,那么最远就可以跳到位置(3+4); 
+     * 5.故选择跳到位置3 ,重复1.2.3步; 
+     *  
+     * 算法分析： 
+     * 1.如果选择跳到位置3 ,就无法跳到位置2和位置3, 那么会不会因此错过最优解？ 答：不会！ 
+     * 2.因为任意位置1和位置2能到达的位置, 位置3都可以到达; 
+     * 3.故不会错过最优解; 
+     * @return
+     */
+    public static boolean canJumpGreed(int[] nums) {
+    	// value为当前位置值， left为左边界，即能达到最远处的下标值，即i的最优移动位置（局部最优解）
+    	// right为该右边界，及某点所能达到的最远距离，即局部最优解的判断条件，也可判断可达最远距离
+    	int value, left = 0, right = 0;
+    	for(int i = 0; i < nums.length - 1 && nums[i] != 0 && right < nums.length - 1; ) {
+    		value = nums[i];
+    		right = 0;
+    		for(int j = 1; j <= value && i + j < nums.length; j++) {
+    			int position = i + j;
+    			int canReachPosition = position + nums[position];
+    			if (canReachPosition > right) {
+					left = position;
+					right = canReachPosition;
+				}
+    		}
+    		i = left;
+    	}
+    	//通过最后得到的最远可达距离与nums的长度对比得出是否可达
+    	if (right < nums.length - 1) {
+			return false;
+		} else {
+			return true;
+		}
+    }
     
 //    /**
 //     * 差不多需三次两两交换两个边一个斜线

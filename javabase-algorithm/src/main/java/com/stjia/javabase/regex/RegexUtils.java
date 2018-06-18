@@ -213,7 +213,7 @@ public class RegexUtils {
 	 * @return
 	 */
 	public static String transBound(String regex, String text, int startPosition, boolean useTransbound) {
-		StringBuilder result = new StringBuilder();
+		StringBuffer result = new StringBuffer();
 		Matcher matcher = Pattern.compile(regex).matcher(text);
 		//默认为false 检索范围之外不透明
 		matcher.useTransparentBounds(useTransbound);

@@ -43,5 +43,22 @@ class LeetCodeTest {
 	void testmaxProfit4Once() {
 		assertEquals(1, LeetCodeUtils.maxProfit4Once(new int[] {1,2}));
 	}
+	
+	@Test
+	void testcountAndSay() {
+		assertEquals("1211", LeetCodeUtils.countAndSay(4));
+	}
+	
+	@Test
+	void testcanJump() {
+		assertTrue(LeetCodeUtils.canJump(new int[] {2,3,1,1,4}));
+		assertFalse(LeetCodeUtils.canJump(new int[] {3,2,1,0,4}));
+	}
+	
+	@Test
+	void testcanJumpGreed() {
+		assertTrue(LeetCodeUtils.canJumpGreed(new int[] {2,3,1,1,4}));
+		assertFalse(LeetCodeUtils.canJumpGreed(new int[] {3,2,1,0,4}));
+	}
 
 }

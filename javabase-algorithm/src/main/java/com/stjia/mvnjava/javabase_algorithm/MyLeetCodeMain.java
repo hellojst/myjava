@@ -52,13 +52,13 @@ public class MyLeetCodeMain {
 		int[] arrays = new int[] {0,1,0,3,12};
 		LeetCodeUtils.moveZeroes(arrays);
 		printArray(arrays);
-		System.out.println(LeetCodeUtils.countAndSay(4));
 		*/
+		System.out.println(LeetCodeUtils.countAndSay(4));
 //		int[] testarray = new int[] {0, 0 , 0};
 //		int[] testarray = new int[] {-1, 0, 1, 2, -1, -4};
 		int[] testarray = new int[] {-1,-1,-1,1};
 		List<List<Integer>> ressults = LeetCodeUtils.threeSum(testarray);
-		int i = 0;
+		System.out.println(LeetCodeUtils.canJumpGreed(new int[] {5,9,3,2,1,0,2,3,3,1,0,0}));
 	}
 
 	private static void printArray(int[] array) {
